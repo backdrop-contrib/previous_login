@@ -14,6 +14,23 @@ hijacked, or a database compromise. By detecting unauthorized logins,
 administrators are alerted to save system logs to review for where
 unauthorized activity may have originated from and what actions were performed.
 
+Configuration
+-------------
+
+The Previous login module doesn't have configuration of its own, but its
+usefulness depends on the Backdrop core regional configuration.
+
+Since the default settings for Backdrop will use UTC for all site timestamps,
+users in the EST/EDT could see their previous login timestamp offset by 4
+hours if the administrator does not allow regional timezone settings.
+
+Review your configuration at:
+
+Administration » Configuration » Regional and language » Regional settings
+
+The recommended configuration is to allow users to configure their own
+timezones for each account: "Users may set their own time zone."
+
 Login Security
 --------------
 
