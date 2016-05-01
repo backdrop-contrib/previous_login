@@ -1,0 +1,4 @@
+name = Previous login
+description = Display timestamp of the previous login after users authenticate.
+backdrop = 1.x
+type = module

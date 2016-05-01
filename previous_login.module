@@ -1,0 +1,64 @@
+<?php
+/**
+ * @file
+ * Display a timestamp of the previous login after users authenticate.
+ */
+
+/**
+ * Implements hook_form_alter().
+ */
+function previous_login_form_alter(&$form, &$form_state, $form_id) {
+  switch ($form_id) {
+    case 'user_login':
+    case 'user_login_block':
+      // Put login_security first or the capture of the previous login
+      // timestamp won't work and core's validation will update to the current
+      // login instance before login_security can read the old timestamp.
+      $validate = array('previous_login_set_login_timestamp');
+
+      if (isset($form['#validate']) && is_array($form['#validate'])) {
+        $form['#validate'] = array_merge($validate, $form['#validate']);
+      }
+      else {
+        $form['#validate'] = $validate;
+      }
+
+      $form['#submit'][] = 'previous_login_show_timestamp';
+      break;
+  }
+}
+
+/**
+ * Save login attempt and save login/access timestamps.
+ *
+ * Previous incarnations of this code put it in hook_submit or hook_user, but
+ * since Drupal core validation updates the login timestamp, we have to set the
+ * message before it gets updated with the current login instance.
+ */
+function previous_login_set_login_timestamp($form, &$form_state) {
+  $account = db_select('users', 'u')
+    ->fields('u', array('login'))
+    ->condition('name', $form_state['values']['name'])
+    ->condition('status', 1)
+    ->execute()
+    ->fetchAssoc();
+
+  if (empty($account)) {
+    return;
+  }
+
+  $form_state['values']['previous_login'] = $account['login'];
+}
+
+/**
+ * Implements hook_sumbit().
+ */
+function previous_login_show_timestamp($form, &$form_state) {
+  // The submit handler shouldn't be called unless the authentication succeeded.
+  if (user_is_logged_in()) {
+    drupal_set_message(
+      t('Your previous login was @stamp.', array('@stamp' => format_date($form_state['values']['previous_login'], 'long'))),
+      'status'
+    );
+  }
+}
