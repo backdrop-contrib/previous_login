@@ -32,7 +32,7 @@ function previous_login_form_alter(&$form, &$form_state, $form_id) {
  * Save login attempt and save login/access timestamps.
  *
  * Previous incarnations of this code put it in hook_submit or hook_user, but
- * since Drupal core validation updates the login timestamp, we have to set the
+ * since Backdrop core validation updates the login timestamp, we have to set the
  * message before it gets updated with the current login instance.
  */
 function previous_login_set_login_timestamp($form, &$form_state) {
@@ -56,7 +56,7 @@ function previous_login_set_login_timestamp($form, &$form_state) {
 function previous_login_show_timestamp($form, &$form_state) {
   // The submit handler shouldn't be called unless the authentication succeeded.
   if (user_is_logged_in()) {
-    drupal_set_message(
+    backdrop_set_message(
       t('Your previous login was @stamp.', array('@stamp' => format_date($form_state['values']['previous_login'], 'long'))),
       'status'
     );
