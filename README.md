@@ -28,7 +28,7 @@ This functionality was bolted on to the Login Security module in Drupal. As the 
 Current Maintainer
 ------------------
 
-- David Norman (https://github.com/deekayen)
+- None
 
 Credits
 -----------
